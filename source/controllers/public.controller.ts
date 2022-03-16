@@ -6,7 +6,6 @@ export class PublicController {
 
     public async testConexion(req: Request, res: Response) {
         try {
-            console.log(req.body);
             const result = await test();
             res.status(200).json({ status: 200, message: result ? "conexión exitosa" : "no se pudo conectar" });
         } catch (error) {

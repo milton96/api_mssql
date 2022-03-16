@@ -4,13 +4,21 @@ import morgan from "morgan";
 import helmet from "helmet";
 
 import { SERVER_CONFIG } from "./config";
+import { PublicRoutes } from "./routes/public.routes";
 
 export class Server {
     private app: Application;
 
+    private publicRoutes: PublicRoutes;
+
     constructor(){
+        // inicializar
+        this.publicRoutes = new PublicRoutes();
+
+        // configuraciones
         this.app = express();
         this.config();
+        this.routes();
     }
 
     private config() {
@@ -20,6 +28,10 @@ export class Server {
         this.app.use(cors());
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: false }));
+    }
+
+    private routes() {
+        this.app.use("/api", this.publicRoutes.getRoutes());
     }
 
     /**
