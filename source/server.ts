@@ -18,6 +18,8 @@ export class Server {
         // configuraciones
         this.app = express();
         this.config();
+
+        // rutas
         this.routes();
     }
 
