@@ -1,4 +1,5 @@
 import sql from "mssql";
+
 import { DB_CONFIG } from "./config";
 
 export class DataBase {
@@ -13,6 +14,8 @@ export class DataBase {
             trustServerCertificate: true
         }
     }
+
+    private request?: sql.Request;
 
     constructor(){}
 
@@ -40,6 +43,48 @@ export class DataBase {
         } catch (error) {
             console.error(error);
             return false;
+        }
+    }
+
+    /**
+     * crea un objeto request para hacer la peticion
+     */
+    public async createRequest() {
+        try {
+            this.request = undefined;
+            let pool = await this.getConnection();
+            if (!pool) throw {error: "No se estableció la conexión"};
+
+            this.request = pool.request();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    /**
+     * agrega un parametro de tipo input
+     */
+    public addInputParameter(name: string, type: sql.ISqlType | (() => sql.ISqlType), value: any) {
+        if (this.request) {
+            this.request.input(name, type, value);
+        }
+    }
+
+    /**
+     * agrega un parametro de tipo input
+     */
+     public addOutputParameter(name: string, type: sql.ISqlType | (() => sql.ISqlType)) {
+        if (this.request) {
+            this.request.output(name, type);
+        }
+    }
+
+    /**
+     * ejeccuta el request
+     */
+    public async executeRequest(storeProcedure: string) {
+        if (this.request) {
+            return await this.request.execute(storeProcedure);
         }
     }
 }

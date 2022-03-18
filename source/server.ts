@@ -5,15 +5,18 @@ import helmet from "helmet";
 
 import { SERVER_CONFIG } from "./config";
 import { PublicRoutes } from "./routes/public.routes";
+import { UsuarioRoutes } from "./routes/usuario.routes";
 
 export class Server {
     private app: Application;
 
     private publicRoutes: PublicRoutes;
+    private usuarioRoutes: UsuarioRoutes;
 
     constructor(){
         // inicializar
         this.publicRoutes = new PublicRoutes();
+        this.usuarioRoutes = new UsuarioRoutes();
 
         // configuraciones
         this.app = express();
@@ -34,6 +37,7 @@ export class Server {
 
     private routes() {
         this.app.use("/api", this.publicRoutes.getRoutes());
+        this.app.use("/api", this.usuarioRoutes.getRoutes());
     }
 
     /**
